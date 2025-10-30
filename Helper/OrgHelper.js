@@ -1,7 +1,25 @@
 
 const orgXmltojson = (data) => {
-  console.log(data?.Bundle?.entry?.length)
   const organizations = data?.Bundle?.entry?.map((entry) => {
+    const telecoms = entry?.resource?.[0]?.Organization?.[0]?.contact?.map((contact) => {
+      // Sort telecom so that email comes first, then phone
+      const sortedTelecom = (contact?.telecom || []).slice().sort((a, b) => {
+        const getOrder = (t) => t?.system?.[0]?.["$"]?.value === "email" ? 0 : t?.system?.[0]?.["$"]?.value === "phone" ? 1 : 2;
+        return getOrder(a) - getOrder(b);
+      });
+      return {
+        purpose: contact?.purpose?.[0]?.coding?.[0]?.code?.[0]?.["$"]?.value,
+        name: {
+          use: contact?.name?.[0]?.use?.[0]?.["$"]?.value,
+          text: contact?.name?.[0]?.text?.[0]?.["$"]?.value,
+        },
+        telecom: sortedTelecom.map((t) => ({
+          system: t?.system?.[0]?.["$"]?.value,
+          value: t?.value?.[0]?.["$"]?.value,
+        })),
+      };
+    });
+
     return {
       fullUrl: entry?.fullUrl[0]?.["$"]?.value,
       id: entry?.resource?.[0]?.Organization?.[0]?.id?.[0]?.["$"]?.value,
@@ -27,20 +45,10 @@ const orgXmltojson = (data) => {
         postalCode: entry?.resource?.[0]?.Organization?.[0]?.address?.[0]?.postalCode?.[0]?.["$"]?.value,
         country: entry?.resource?.[0]?.Organization?.[0]?.address?.[0]?.country?.[0]?.["$"]?.value,
       },
-      contactDetails: entry?.resource?.[0]?.Organization?.[0]?.contact?.map((contact) => ({
-        purpose: contact?.purpose?.[0]?.coding?.[0]?.code?.[0]?.["$"]?.value,
-        name: {
-          use: contact?.name?.[0]?.use?.[0]?.["$"]?.value,
-          text: contact?.name?.[0]?.text?.[0]?.["$"]?.value,
-        },
-        telecom: contact?.telecom?.map((t) => ({
-          system: t?.system?.[0]?.["$"]?.value,
-          value: t?.value?.[0]?.["$"]?.value,
-        })),
-      }))
+      contactDetails: telecoms
     };
   });
-  return organizations;
+  return { status: "success", totalCount : data?.Bundle?.entry?.length, data: organizations };
 };
 
 module.exports = {

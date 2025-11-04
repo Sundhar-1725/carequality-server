@@ -51,6 +51,28 @@ const orgXmltojson = (data) => {
   return { status: "success", totalCount : data?.Bundle?.entry?.length, data: organizations };
 };
 
+const separateXmlEntries = (xmlData) => {
+  // This function can be implemented to separate XML entries if needed
+  
+};
+
+const updateExternalOrgData = (DB_data, external_data) => {
+  // This function can be implemented to update external organization data
+  let updatedData = [];
+  // Example logic to merge DB_data with external_data
+  // This is a placeholder and should be replaced with actual merging logic
+  updatedData = DB_data.map(dbEntry => {
+    // Find matching entry in external_data
+    const match = external_data.Bundle.entry.find(extEntry => 
+      extEntry.resource[0].Organization[0].id[0]["$"].value === dbEntry.id
+    );
+    return match ? { ...dbEntry, externalInfo: match } : dbEntry;
+  });
+  return updatedData;
+};
+
 module.exports = {
   orgXmltojson,
+  separateXmlEntries,
+  updateExternalOrgData
 };

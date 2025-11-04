@@ -20,13 +20,13 @@ con.connect().then(() => {
   console.error("❌ Connection to PostgreSQL database failed:", err);
 });
 
-con.query("select * from Organization_Data", (err, res) => {
-  if (!err) {
-    console.log("✅ Query Result:", res.rows);
-  } else {
-    console.error("❌ Query Error:", err);
-  }
-})
+// con.query("select * from Organization_Data", (err, res) => {
+//   if (!err) {
+//     console.log("✅ Query Result:", res.rows);
+//   } else {
+//     console.error("❌ Query Error:", err);
+//   }
+// })
 
 const router = require('./Router/router');
 

@@ -15,9 +15,10 @@ if (!connectionString) {
   process.exit(1);
 }
 
+// Create the PostgreSQL client with the connection string
 const client = new Client({
   connectionString,
-  ssl:false  // Enable SSL for secure connection
+  ssl: false  // Use SSL if your database requires it
 });
 
 client.connect()
@@ -26,7 +27,6 @@ client.connect()
     console.error("❌ Connection to PostgreSQL database failed:", err);
     process.exit(1);
   });
-
 
 app.use(cors());
 app.use(bodyParser.json({ limit: "50mb" }));

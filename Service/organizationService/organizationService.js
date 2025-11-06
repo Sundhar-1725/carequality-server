@@ -2,7 +2,7 @@ const axios = require('axios');
 const { BASE_URL } = require('../../config');
 const xml2js = require('xml2js');
 const OrganizationModel = require('../../Model/OrganizationModel/organizationModel');
-const orgModel = new OrganizationModel();
+// const orgModel = new OrganizationModel();
 const orgHelper = require('../../Helper/OrgHelper');        
 
 exports.getOrganization = async () => {

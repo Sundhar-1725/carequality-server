@@ -9,21 +9,24 @@ const port = process.env.PORT || 8000;
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
-
-console.log("🔍 Environment check:");
 const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  console.error("❌ DATABASE_URL is not set. Please define it in .env or the environment.");
+  process.exit(1);
+}
 
-console.log("🧩 Using connection string:", connectionString ? "found" : "❌ Missing");
-
-const con = new Client({
-  connectionString: connectionString,
-  ssl: {
-    rejectUnauthorized: false,
-  },
+const client = new Client({
+  connectionString,
+  ssl:false  // Enable SSL for secure connection
 });
-con.connect()
+
+client.connect()
   .then(() => console.log("✅ Connected to PostgreSQL database"))
-  .catch((err) => console.error("❌ Connection to PostgreSQL database failed:", err));
+  .catch((err) => {
+    console.error("❌ Connection to PostgreSQL database failed:", err);
+    process.exit(1);
+  });
+
 
 app.use(cors());
 app.use(bodyParser.json({ limit: "50mb" }));

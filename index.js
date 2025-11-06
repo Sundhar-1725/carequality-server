@@ -6,12 +6,24 @@ const port = 8000;
 
 const { Client } = require('pg')
 
+// const con = new Client({
+//   user: 'postgres',
+//   host: 'localhost',
+//   database: 'carequality',
+//   password: 'admin',
+//   port: 5432,
+// });
+
 const con = new Client({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'carequality',
-  password: 'admin',
-  port: 5432,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+  ssl: {
+    rejectUnauthorized: false, // Render requires SSL
+  },
+  connectionString: process.env.DATABASE_URL,
 });
 
 con.connect().then(() => {
@@ -19,14 +31,6 @@ con.connect().then(() => {
 }).catch(err => {
   console.error("❌ Connection to PostgreSQL database failed:", err);
 });
-
-// con.query("select * from Organization_Data", (err, res) => {
-//   if (!err) {
-//     console.log("✅ Query Result:", res.rows);
-//   } else {
-//     console.error("❌ Query Error:", err);
-//   }
-// })
 
 const router = require('./Router/router');
 

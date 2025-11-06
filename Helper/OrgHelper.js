@@ -210,7 +210,7 @@ const updateExternalOrgDataHelper = (DB_data, external_data) => {
 
   // Prepare a flat array for results
   const updatedData = [];
-
+  
   DB_data.forEach((dbEntry) => {
     const dbParsed = orgXmltojson2(dbEntry.data.entry || dbEntry.data[0]?.entry || dbEntry.data); // handle nested XML parsed structure
 

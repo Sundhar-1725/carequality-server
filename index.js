@@ -3,7 +3,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
 const port = 8000;
-
+const dotenv = require('dotenv');
+dotenv.config();
 const { Client } = require('pg')
 
 // const con = new Client({
@@ -14,16 +15,23 @@ const { Client } = require('pg')
 //   port: 5432,
 // });
 
+// const con = new Client({
+//   user: process.env.DB_USER,
+//   host: process.env.DB_HOST,
+//   database: process.env.DB_NAME,
+//   password: process.env.DB_PASSWORD,
+//   port: process.env.DB_PORT,
+//   ssl: {
+//     rejectUnauthorized: false, // Render requires SSL
+//   },
+//   connectionString: process.env.DATABASE_URL,
+// });
+
 const con = new Client({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-  ssl: {
-    rejectUnauthorized: false, // Render requires SSL
-  },
   connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false, // Important for Render
+  },
 });
 
 con.connect().then(() => {

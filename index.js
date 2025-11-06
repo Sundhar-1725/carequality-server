@@ -1,55 +1,49 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const { Client } = require('pg');
+
 const app = express();
-const port = 8000;
-const dotenv = require('dotenv');
-dotenv.config();
-const { Client } = require('pg')
 
-// const con = new Client({
-//   user: 'postgres',
-//   host: 'localhost',
-//   database: 'carequality',
-//   password: 'admin',
-//   port: 5432,
-// });
+// ✅ Use Render’s port if available, otherwise 8000 for local
+const port = process.env.PORT || 8000;
 
-// const con = new Client({
-//   user: process.env.DB_USER,
-//   host: process.env.DB_HOST,
-//   database: process.env.DB_NAME,
-//   password: process.env.DB_PASSWORD,
-//   port: process.env.DB_PORT,
-//   ssl: {
-//     rejectUnauthorized: false, // Render requires SSL
-//   },
-//   connectionString: process.env.DATABASE_URL,
-// });
+// ✅ Load .env file only in local environment
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 
+// ✅ PostgreSQL connection
 const con = new Client({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.DATABASE_URL, // Render provides this automatically
   ssl: {
-    rejectUnauthorized: false, // Important for Render
+    rejectUnauthorized: false, // Required for Render Postgres
   },
 });
 
-con.connect().then(() => {
-  console.log("✅ Connected to PostgreSQL database");
-}).catch(err => {
-  console.error("❌ Connection to PostgreSQL database failed:", err);
-});
+con.connect()
+  .then(() => {
+    console.log('✅ Connected to PostgreSQL database');
+  })
+  .catch(err => {
+    console.error('❌ Connection to PostgreSQL database failed:', err);
+  });
 
-const router = require('./Router/router');
-
-app.use(bodyParser.json({ limit: '50mb' })); 
-app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
-app.use(express.json({ limit: '50mb' }));
+// ✅ Middleware
 app.use(cors());
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 
-// Base path
+// ✅ Routes
+const router = require('./Router/router');
 app.use('/api/fhir', router);
 
+// ✅ Root route (optional)
+app.get('/', (req, res) => {
+  res.send('🚀 CareQuality Server is running successfully!');
+});
+
+// ✅ Start server
 app.listen(port, () => {
-  console.log(`✅ Server is running on http://localhost:${port}`);
+  console.log(`✅ Server is running on port ${port}`);
 });

@@ -1,6 +1,5 @@
-
 const orgXmltojson = (data) => {
-  const organizations = data?.Bundle?.entry?.map((entry) => {
+  const organizations = data?.Bundle?.entry?.map((entry, inx1) => {
     const telecoms = entry?.resource?.[0]?.Organization?.[0]?.contact?.map((contact) => {
       // Sort telecom so that email comes first, then phone
       const sortedTelecom = (contact?.telecom || []).slice().sort((a, b) => {
@@ -19,6 +18,31 @@ const orgXmltojson = (data) => {
         })),
       };
     });
+
+    // Initialize ITI values object
+    const itiValues = {
+      iti_38: null,
+      iti_39: null,
+      iti_55: null
+    };
+
+    // Extract ITI endpoints
+    entry?.resource?.[0]?.Organization?.[0]?.contained
+      ?.filter((cont) => cont?.Endpoint)
+      ?.forEach((cont) => {
+        cont.Endpoint?.forEach((item) => {
+          const itemId = item?.id?.[0]?.["$"]?.value;
+          const address = item.address?.[0]?.["$"]?.value;
+          
+          if (itemId === "XCA-ITI-38") {
+            itiValues.iti_38 = address;
+          } else if (itemId === "XCA-ITI-39") {
+            itiValues.iti_39 = address;
+          } else if (itemId === "XCPD-ITI-55") {
+            itiValues.iti_55 = address;
+          }
+        });
+      });
 
     return {
       fullUrl: entry?.fullUrl[0]?.["$"]?.value,
@@ -45,6 +69,7 @@ const orgXmltojson = (data) => {
         postalCode: entry?.resource?.[0]?.Organization?.[0]?.address?.[0]?.postalCode?.[0]?.["$"]?.value,
         country: entry?.resource?.[0]?.Organization?.[0]?.address?.[0]?.country?.[0]?.["$"]?.value,
       },
+      iti_ID: itiValues,
       contactDetails: telecoms
     };
   });
@@ -79,7 +104,6 @@ const orgXmltojson1 = (data) => {
         })),
       };
     });
-
     return {
       fullUrl: entry?.fullUrl[0]?.["$"]?.value,
       id: entry?.resource?.[0]?.Organization?.[0]?.id?.[0]?.["$"]?.value,

@@ -11,13 +11,16 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 console.log("🔍 Environment check:");
-console.log("DATABASE_URL:", process.env.DATABASE_URL ? "✅ Found" : "❌ Missing");
+const connectionString = process.env.DATABASE_URL;
+
+console.log("🧩 Using connection string:", connectionString ? connectionString.split('@')[1] : "❌ Missing");
 
 const con = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
+  connectionString: connectionString,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
-
 con.connect()
   .then(() => console.log("✅ Connected to PostgreSQL database"))
   .catch((err) => console.error("❌ Connection to PostgreSQL database failed:", err));

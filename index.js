@@ -5,15 +5,15 @@ const { Client } = require('pg');
 
 const app = express();
 
-// ✅ Use Render’s port if available, otherwise 8000 for local
+// Use Render’s port if available, otherwise 8000 for local
 const port = process.env.PORT || 8000;
 
-// ✅ Load .env file only in local environment
+// Load .env file only in local environment
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 
-// ✅ PostgreSQL connection
+// PostgreSQL connection
 const con = new Client({
   connectionString: process.env.DATABASE_URL, // Render provides this automatically
   ssl: {
@@ -23,10 +23,10 @@ const con = new Client({
 
 con.connect()
   .then(() => {
-    console.log('✅ Connected to PostgreSQL database');
+    console.log('Connected to PostgreSQL database');
   })
   .catch(err => {
-    console.error('❌ Connection to PostgreSQL database failed:', err);
+    console.error('Connection to PostgreSQL database failed:', err);
   });
 
 // ✅ Middleware
@@ -40,10 +40,10 @@ app.use('/api/fhir', router);
 
 // ✅ Root route (optional)
 app.get('/', (req, res) => {
-  res.send('🚀 CareQuality Server is running successfully!');
+  res.send('CareQuality Server is running successfully!');
 });
 
 // ✅ Start server
 app.listen(port, () => {
-  console.log(`✅ Server is running on port ${port}`);
+  console.log(`Server is running on port ${port}`);
 });

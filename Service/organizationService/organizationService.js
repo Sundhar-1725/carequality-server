@@ -5,7 +5,6 @@ const OrganizationModel = require('../../Model/OrganizationModel/organizationMod
 const orgModel = new OrganizationModel();
 const orgHelper = require('../../Helper/OrgHelper');        
 
-const parser = new xml2js.Parser();
 exports.getOrganization = async () => {
     try {
         const response = await axios.get(`${BASE_URL}/fhir/Organization/?_format=xml&_apiKey=7XSRVkjqYAZSTzBVSHv9RjuCI1Sq40pP7Njc1fnN2zl2Scg7f4`);

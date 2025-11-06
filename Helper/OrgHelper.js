@@ -48,7 +48,15 @@ const orgXmltojson = (data) => {
       contactDetails: telecoms
     };
   });
-  return { status: "success", totalCount: data?.Bundle?.entry?.length, data: organizations };
+  return {
+    message: {
+      status: "success",
+      code: 200,
+      description: "Organization data fetched successfully"
+    },
+    totalCount: data?.Bundle?.entry?.length,
+    data: organizations
+  };
 };
 
 const orgXmltojson1 = (data) => {
@@ -157,21 +165,21 @@ const orgXmltojson2 = (data) => {
 
 const data_Updatate = (dbEntry, extEntry) => {
   // Helper function to deeply compare two objects
-  
+
   // Add null/undefined checks before processing
   if (!dbEntry || !extEntry) {
     return 2; // Return extEntry preference if data is missing
   }
-  
+
   // Additional checks for nested structure
   if (!dbEntry.resource || !Array.isArray(dbEntry.resource) || dbEntry.resource.length === 0) {
     return 2;
   }
-  
+
   if (!extEntry.resource || !Array.isArray(extEntry.resource) || extEntry.resource.length === 0) {
     return 2;
   }
-  
+
   const deepEqual = (obj1, obj2) => {
     if (obj1 === obj2) return true;
     if (obj1 == null || obj2 == null) return false;
@@ -210,7 +218,7 @@ const updateExternalOrgDataHelper = (DB_data, external_data) => {
 
   // Prepare a flat array for results
   const updatedData = [];
-  
+
   DB_data.forEach((dbEntry) => {
     const dbParsed = orgXmltojson2(dbEntry.data.entry || dbEntry.data[0]?.entry || dbEntry.data); // handle nested XML parsed structure
 

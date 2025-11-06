@@ -13,7 +13,7 @@ if (process.env.NODE_ENV !== "production") {
 console.log("🔍 Environment check:");
 const connectionString = process.env.DATABASE_URL;
 
-console.log("🧩 Using connection string:", connectionString ? connectionString.split('@')[1] : "❌ Missing");
+console.log("🧩 Using connection string:", connectionString ? "found" : "❌ Missing");
 
 const con = new Client({
   connectionString: connectionString,
